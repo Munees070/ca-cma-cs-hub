@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>CA · CMA · CS Hub</title>
+<meta name="description" content="Reference material and live updates across GST, Income Tax, Forex, Derivatives, Corporate Law and more." />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="theme-color" content="#1c2431" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="CA-CMA-CS Hub" />
+<style>
+  html, body, #root { margin: 0; padding: 0; height: 100%; background: #f2efe4; }
+  * { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState } = React;
+const h = React.createElement;
+
+/* ---------- minimal line icons (no external icon lib needed) ---------- */
+const Icon = ({ children, size = 18 }) => h("svg", {
+  width: size, height: size, viewBox: "0 0 24 24", fill: "none",
+  stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round"
+}, children);
+
+const IconReceipt = (p) => h(Icon, p, h("path", { d: "M5 3h14v18l-2.5-1.5L14 21l-2.5-1.5L9 21l-2.5-1.5L4 21V3z" }), h("line", { x1: 8, y1: 8, x2: 16, y2: 8 }), h("line", { x1: 8, y1: 12, x2: 16, y2: 12 }));
+const IconLandmark = (p) => h(Icon, p, h("polygon", { points: "12,3 22,9 2,9" }), h("line", { x1: 4, y1: 21, x2: 20, y2: 21 }), h("line", { x1: 6, y1: 9, x2: 6, y2: 19 }), h("line", { x1: 12, y1: 9, x2: 12, y2: 19 }), h("line", { x1: 18, y1: 9, x2: 18, y2: 19 }));
+const IconShip = (p) => h(Icon, p, h("path", { d: "M4 15l1.5 5h13L20 15" }), h("path", { d: "M6 15V9h12v6" }), h("line", { x1: 12, y1: 3, x2: 12, y2: 9 }), h("line", { x1: 12, y1: 3, x2: 16, y2: 5 }));
+const IconGlobe = (p) => h(Icon, p, h("circle", { cx: 12, cy: 12, r: 9 }), h("ellipse", { cx: 12, cy: 12, rx: 4, ry: 9 }), h("line", { x1: 3, y1: 12, x2: 21, y2: 12 }));
+const IconTrend = (p) => h(Icon, p, h("polyline", { points: "4,17 10,11 14,15 20,7" }), h("polyline", { points: "14,7 20,7 20,13" }));
+const IconBuilding = (p) => h(Icon, p, h("rect", { x: 4, y: 3, width: 16, height: 18 }), h("line", { x1: 8, y1: 7, x2: 8, y2: 7 }), h("line", { x1: 8, y1: 11, x2: 10, y2: 11 }), h("line", { x1: 14, y1: 11, x2: 16, y2: 11 }), h("line", { x1: 8, y1: 15, x2: 10, y2: 15 }), h("line", { x1: 14, y1: 15, x2: 16, y2: 15 }), h("line", { x1: 10, y1: 21, x2: 10, y2: 17 }), h("line", { x1: 14, y1: 21, x2: 14, y2: 17 }));
+const IconBook = (p) => h(Icon, p, h("path", { d: "M12 6c-1.5-1.2-4-2-8-2v14c4 0 6.5 0.8 8 2 1.5-1.2 4-2 8-2V4c-4 0-6.5 0.8-8 2z" }), h("line", { x1: 12, y1: 6, x2: 12, y2: 20 }));
+const IconShield = (p) => h(Icon, p, h("path", { d: "M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" }), h("polyline", { points: "9,12 11,14 15,10" }));
+const IconCalc = (p) => h(Icon, p, h("rect", { x: 5, y: 2, width: 14, height: 20, rx: 1 }), h("line", { x1: 8, y1: 6, x2: 16, y2: 6 }), h("line", { x1: 8, y1: 11, x2: 8, y2: 11 }), h("line", { x1: 12, y1: 11, x2: 12, y2: 11 }), h("line", { x1: 16, y1: 11, x2: 16, y2: 11 }), h("line", { x1: 8, y1: 15, x2: 8, y2: 15 }), h("line", { x1: 12, y1: 15, x2: 12, y2: 15 }), h("line", { x1: 16, y1: 15, x2: 16, y2: 15 }), h("line", { x1: 8, y1: 19, x2: 8, y2: 19 }), h("line", { x1: 12, y1: 19, x2: 12, y2: 19 }), h("line", { x1: 16, y1: 19, x2: 16, y2: 19 }));
+const IconSearch = (p) => h(Icon, p, h("circle", { cx: 11, cy: 11, r: 7 }), h("line", { x1: 21, y1: 21, x2: 16.5, y2: 16.5 }));
+const IconLibrary = (p) => h(Icon, p, h("path", { d: "M4 21V6l5-2v17" }), h("path", { d: "M9 21V4l6 2v15" }), h("path", { d: "M15 21V6l5 2v13" }));
+const IconNewsPaper = (p) => h(Icon, p, h("rect", { x: 3, y: 5, width: 15, height: 15, rx: 1 }), h("line", { x1: 7, y1: 9, x2: 15, y2: 9 }), h("line", { x1: 7, y1: 13, x2: 15, y2: 13 }), h("line", { x1: 7, y1: 17, x2: 12, y2: 17 }), h("path", { d: "M18 8h3v10a2 2 0 0 1-2 2h-1" }));
+const IconExternal = (p) => h(Icon, p, h("path", { d: "M14 4h6v6" }), h("line", { x1: 20, y1: 4, x2: 10, y2: 14 }), h("path", { d: "M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" }));
+const IconChevron = (p) => h(Icon, p, h("polyline", { points: "9,6 15,12 9,18" }));
+
+/* ---------- data ---------- */
+const gnews = (q) => "https://news.google.com/search?q=" + encodeURIComponent(q) + "&hl=en-IN&gl=IN";
+
+const SUBJECTS = [
+  { id: "gst", name: "GST", full: "Goods & Services Tax", icon: IconReceipt, tags: ["CA","CMA","CS"],
+    tagline: "One nation, one tax — and a thousand notifications a year.",
+    keyAreas: ["Supply, place of supply & time of supply rules","Input Tax Credit (ITC) eligibility and reversal","E-invoicing & e-way bill thresholds","Composition scheme & reverse charge mechanism","GST returns — GSTR-1, 3B, 9 & 9C"],
+    concepts: [
+      { term: "ITC Matching", note: "Credit is only as good as your supplier's compliance — GSTR-2B now drives eligibility, not just your own invoice." },
+      { term: "E-invoicing", note: "The mandatory turnover threshold has stepped down over successive notifications; always confirm the current limit before advising a client." },
+      { term: "Composition Scheme", note: "Trades lower compliance for no ITC — a cash-flow decision as much as a tax one." }],
+    sources: [ { label: "GST Council", url: "https://gstcouncil.gov.in/" }, { label: "CBIC", url: "https://www.cbic.gov.in/" }, { label: "News search", url: gnews("GST India") } ] },
+
+  { id: "income-tax", name: "Income Tax", full: "Income Tax & E-Filing", icon: IconLandmark, tags: ["CA","CMA","CS"],
+    tagline: "Five heads of income, one return, endless interpretation.",
+    keyAreas: ["Old vs new tax regime — slab comparison","Heads of income: salary, house property, PGBP, capital gains, other sources","TDS/TCS provisions & compliance calendar","Assessment procedures & faceless assessment","Capital gains — indexation, exemptions u/s 54 series"],
+    concepts: [
+      { term: "New Regime Default", note: "The concessional regime is now the default; opting into the old regime needs an explicit election for certain assessees." },
+      { term: "Faceless Assessment", note: "Removes jurisdiction-based officer contact — documentation and timely portal response matter more than ever." },
+      { term: "Section 54 series", note: "Each exemption (54, 54F, 54EC…) has its own asset class and reinvestment window — don't cross-apply conditions." }],
+    sources: [ { label: "Income Tax e-Filing", url: "https://www.incometax.gov.in/" }, { label: "CBDT", url: "https://incometaxindia.gov.in/" }, { label: "News search", url: gnews("Income Tax India") } ] },
+
+  { id: "customs", name: "Customs", full: "Customs Duty & Foreign Trade Policy", icon: IconShip, tags: ["CA","CMA"],
+    tagline: "Where valuation meets classification meets policy.",
+    keyAreas: ["Customs valuation rules & transaction value","Classification under the Customs Tariff / HSN","Duty drawback & export promotion schemes","Advance authorisation & EPCG","SEZ & bonded warehouse provisions"],
+    concepts: [
+      { term: "Transaction Value", note: "The declared price is the starting point, but related-party transactions invite scrutiny under valuation rules." },
+      { term: "Duty Drawback", note: "Refunds duty paid on inputs used in exports — timing and documentation of the export determine eligibility." }],
+    sources: [ { label: "CBIC Customs", url: "https://www.cbic.gov.in/" }, { label: "DGFT", url: "https://www.dgft.gov.in/" }, { label: "News search", url: gnews("Customs duty India") } ] },
+
+  { id: "forex", name: "Forex & FEMA", full: "Foreign Exchange Management", icon: IconGlobe, tags: ["CA","CMA","CS"],
+    tagline: "Capital account, current account, and everything RBI watches.",
+    keyAreas: ["Current vs capital account transactions","FDI & ODI reporting (FC-GPR, FC-TRS, ODI forms)","External Commercial Borrowings (ECB) framework","Liberalised Remittance Scheme (LRS) limits","Compounding of FEMA contraventions"],
+    concepts: [
+      { term: "LRS Limit", note: "The annual remittance ceiling per resident individual is a hard cap across all permitted purposes combined, not per transaction." },
+      { term: "FC-GPR", note: "Filed on allotment of shares to a non-resident — a missed deadline converts a routine filing into a compounding case." }],
+    sources: [ { label: "RBI", url: "https://www.rbi.org.in/" }, { label: "News search", url: gnews("FEMA forex India RBI") } ] },
+
+  { id: "derivatives", name: "Derivatives", full: "Derivatives & Capital Markets", icon: IconTrend, tags: ["CA","CMA","CS"],
+    tagline: "Futures, options, and the Greeks that price them.",
+    keyAreas: ["Futures vs forwards vs options — payoff structures","Hedging, speculation & arbitrage strategies","Option Greeks — delta, gamma, theta, vega","Margin systems — SPAN & exposure margin","SEBI regulatory framework for F&O trading"],
+    concepts: [
+      { term: "Delta Hedging", note: "A dynamic hedge — the position needs rebalancing as the underlying moves, not a one-time setup." },
+      { term: "SPAN Margin", note: "Calculated on worst-case one-day loss scenarios, not simply on notional exposure." }],
+    sources: [ { label: "SEBI", url: "https://www.sebi.gov.in/" }, { label: "NSE", url: "https://www.nseindia.com/" }, { label: "News search", url: gnews("derivatives F&O SEBI India") } ] },
+
+  { id: "companies-act", name: "Corporate Law", full: "Companies Act, 2013 & LLP Law", icon: IconBuilding, tags: ["CA","CS"],
+    tagline: "Incorporation to winding up — the statute that structures a business.",
+    keyAreas: ["Incorporation, MOA/AOA & conversion of entities","Board composition, meetings & related-party transactions","LLP vs partnership vs company — liability & compliance differences","Annual filings — AOC-4, MGT-7, and LLP Form 11/8","Oppression, mismanagement & winding up"],
+    concepts: [
+      { term: "LLP vs Partnership", note: "An LLP is a separate legal entity with limited liability; a partnership firm has none of that separation — the choice changes creditor exposure entirely." },
+      { term: "Related Party Transactions", note: "Board and, above threshold, shareholder approval both apply — arm's length pricing alone doesn't exempt a transaction." }],
+    sources: [ { label: "MCA", url: "https://www.mca.gov.in/" }, { label: "News search", url: gnews("Companies Act India MCA") } ] },
+
+  { id: "accounting-standards", name: "Accounting Std.", full: "Ind AS & Accounting Standards", icon: IconBook, tags: ["CA","CMA"],
+    tagline: "How a transaction becomes a number on a statement.",
+    keyAreas: ["Ind AS 115 — revenue recognition (5-step model)","Ind AS 116 — leases & right-of-use assets","Ind AS 109 — financial instruments classification","Consolidation — Ind AS 110 control model","First-time adoption & carve-outs from IFRS"],
+    concepts: [
+      { term: "5-Step Revenue Model", note: "Identify the contract, performance obligations, transaction price, allocate, then recognise — skipping straight to recognition is the most common exam error." },
+      { term: "ROU Asset", note: "Nearly every lease now sits on the balance sheet — the old operating-lease-off-balance-sheet treatment is largely gone." }],
+    sources: [ { label: "ICAI", url: "https://www.icai.org/" }, { label: "News search", url: gnews("Ind AS accounting standards India") } ] },
+
+  { id: "auditing", name: "Auditing", full: "Auditing & Assurance Standards", icon: IconShield, tags: ["CA","CMA"],
+    tagline: "Reasonable assurance, professional scepticism, and a signed opinion.",
+    keyAreas: ["Standards on Auditing (SA 200 series onward)","Audit risk model — inherent, control & detection risk","Internal financial controls (IFC) reporting","Fraud vs error — auditor's responsibility under SA 240","Audit report modifications & CARO reporting"],
+    concepts: [
+      { term: "Materiality", note: "Set at the planning stage and revisited — it's a judgement threshold, not a fixed percentage rule." },
+      { term: "CARO", note: "A separate, detailed reporting requirement layered on top of the main audit opinion for companies within its scope." }],
+    sources: [ { label: "ICAI Standards", url: "https://www.icai.org/" }, { label: "News search", url: gnews("auditing standards India ICAI") } ] },
+
+  { id: "cost-mgmt", name: "Cost & Mgmt", full: "Cost & Management Accounting", icon: IconCalc, tags: ["CMA"],
+    tagline: "The numbers behind the decision, not just the numbers on the ledger.",
+    keyAreas: ["Standard costing & variance analysis","Marginal costing & cost-volume-profit analysis","Activity-based costing (ABC)","Budgetary control & flexible budgets","Cost audit & CMA reporting requirements"],
+    concepts: [
+      { term: "Variance Analysis", note: "A favourable variance still needs investigating — it can hide an equally serious planning error." },
+      { term: "ABC Costing", note: "Reallocates overheads by activity driver instead of a blanket rate — sharpens product-level profitability where products consume overheads unevenly." }],
+    sources: [ { label: "ICMAI", url: "https://icmai.in/" }, { label: "News search", url: gnews("cost accounting India ICMAI") } ] },
+];
+
+const FILTERS = ["All", "CA", "CMA", "CS"];
+
+function NewsPanel({ subject }) {
+  return h("div", { className: "news-panel" },
+    h("p", { className: "news-lead" }, "Live sources for ", subject.full.toLowerCase(), " — opens in your browser."),
+    h("div", { className: "source-list" },
+      subject.sources.map((s, i) => h("a", {
+        key: i, href: s.url, target: "_blank", rel: "noopener noreferrer", className: "source-item"
+      },
+        h("span", null, s.label),
+        h(IconExternal, { size: 15 })
+      ))
+    )
+  );
+}
+
+function App() {
+  const [selectedId, setSelectedId] = useState(SUBJECTS[0].id);
+  const [tab, setTab] = useState("reference");
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("All");
+
+  const filtered = SUBJECTS.filter((s) => {
+    const matchesFilter = filter === "All" || s.tags.includes(filter);
+    const matchesQuery = query.trim() === "" || s.name.toLowerCase().includes(query.toLowerCase()) || s.full.toLowerCase().includes(query.toLowerCase());
+    return matchesFilter && matchesQuery;
+  });
+  const selected = SUBJECTS.find((s) => s.id === selectedId) || filtered[0];
+
+  return h("div", { className: "hub" },
+    h("div", { className: "hub-header" },
+      h("h1", { className: "hub-title" }, "CA · CMA · CS Reference & News Hub"),
+      h("p", { className: "hub-sub" }, "Reference material and live sources across every core subject."),
+      h("div", { className: "search-row" },
+        h(IconSearch, { size: 15 }),
+        h("input", { placeholder: "Search subjects — GST, forex, derivatives…", value: query, onChange: (e) => setQuery(e.target.value) })
+      ),
+      h("div", { className: "filter-row" },
+        FILTERS.map((f) => h("button", {
+          key: f, className: "filter-chip" + (filter === f ? " active" : ""), onClick: () => setFilter(f)
+        }, f))
+      )
+    ),
+
+    h("div", { className: "subject-list" },
+      filtered.map((s) => h("button", {
+        key: s.id, className: "subject-card" + (s.id === selectedId ? " active" : ""), onClick: () => setSelectedId(s.id)
+      },
+        h(s.icon, { size: 18 }),
+        h("div", { className: "nm" }, s.name)
+      ))
+    ),
+
+    selected && h("div", { className: "content-area" },
+      h("div", { className: "content-head" },
+        h("div", null,
+          h("p", { className: "full" }, selected.full),
+          h("h2", null, selected.name),
+          h("p", { className: "tagline" }, selected.tagline),
+          h("div", { className: "tag-pills" }, selected.tags.map((t) => h("span", { className: "pill", key: t }, t)))
+        )
+      ),
+      h("div", { className: "tabs" },
+        h("button", { className: "tab-btn" + (tab === "reference" ? " active" : ""), onClick: () => setTab("reference") }, h(IconLibrary, { size: 14 }), " Reference"),
+        h("button", { className: "tab-btn" + (tab === "news" ? " active" : ""), onClick: () => setTab("news") }, h(IconNewsPaper, { size: 14 }), " Live sources")
+      ),
+      tab === "reference"
+        ? h("div", { className: "ref-section" },
+            h("h3", null, "Key areas"),
+            h("ul", { className: "key-areas" }, selected.keyAreas.map((k, i) => h("li", { key: i }, h(IconChevron, { size: 15 }), h("span", null, k)))),
+            h("h3", null, "Concepts worth knowing cold"),
+            selected.concepts.map((c, i) => h("div", { className: "concept-card", key: i }, h("p", { className: "term" }, c.term), h("p", { className: "note" }, c.note)))
+          )
+        : h(NewsPanel, { subject: selected, key: selected.id })
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+</script>
+
+<style>
+  .hub { --ink:#1c2431; --ink-soft:#4a5568; --paper:#f2efe4; --paper-raised:#fbfaf5; --line:#d8d2bf; --brass:#9c6b2e; --brass-deep:#7a5122; --green-tag:#3f6650;
+    font-family:'IBM Plex Sans','Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); min-height:100vh; display:flex; flex-direction:column; }
+  .hub-header { padding:22px 18px 16px; border-bottom:1px solid var(--line); }
+  .hub-title { font-family:Georgia,'Source Serif Pro',serif; font-size:22px; font-weight:600; letter-spacing:-0.01em; margin:0 0 2px; }
+  .hub-sub { font-size:13px; color:var(--ink-soft); margin:0; }
+  .search-row { display:flex; align-items:center; gap:8px; margin-top:14px; background:var(--paper-raised); border:1px solid var(--line); padding:8px 10px; }
+  .search-row input { border:none; background:transparent; outline:none; font-size:14px; width:100%; font-family:inherit; color:var(--ink); }
+  .filter-row { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .filter-chip { border:1px solid var(--line); background:transparent; padding:5px 11px; font-size:12px; color:var(--ink-soft); cursor:pointer; font-family:inherit; }
+  .filter-chip.active { background:var(--ink); border-color:var(--ink); color:var(--paper-raised); }
+  .subject-list { display:flex; overflow-x:auto; gap:10px; padding:16px 18px; border-bottom:1px solid var(--line); -webkit-overflow-scrolling:touch; }
+  .subject-card { flex:0 0 auto; width:132px; border:1px solid var(--line); background:var(--paper-raised); padding:12px 10px; cursor:pointer; text-align:left; font-family:inherit; color:var(--brass-deep); }
+  .subject-card.active { border-color:var(--brass); box-shadow:inset 0 0 0 1px var(--brass); }
+  .subject-card svg { margin-bottom:8px; display:block; }
+  .subject-card .nm { font-size:13px; font-weight:600; line-height:1.25; color:var(--ink); }
+  .content-area { padding:20px 18px 48px; flex:1; }
+  .content-head h2 { font-family:Georgia,'Source Serif Pro',serif; font-size:21px; margin:0 0 4px; }
+  .content-head .full { font-size:12.5px; color:var(--brass-deep); margin:0 0 6px; font-weight:600; }
+  .tagline { font-size:13.5px; color:var(--ink-soft); margin:0 0 6px; max-width:34ch; }
+  .tag-pills { display:flex; gap:5px; }
+  .pill { font-size:10.5px; border:1px solid var(--green-tag); color:var(--green-tag); padding:2px 7px; }
+  .tabs { display:flex; margin-top:18px; border-bottom:1px solid var(--line); }
+  .tab-btn { border:none; background:transparent; font-family:inherit; font-size:13.5px; padding:9px 4px; margin-right:22px; color:var(--ink-soft); cursor:pointer; border-bottom:2px solid transparent; display:flex; align-items:center; gap:6px; }
+  .tab-btn.active { color:var(--ink); border-bottom-color:var(--brass); font-weight:600; }
+  .ref-section { margin-top:18px; }
+  .ref-section h3 { font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); font-weight:600; margin:0 0 10px; }
+  .key-areas { list-style:none; padding:0; margin:0 0 26px; }
+  .key-areas li { padding:9px 0; border-top:1px solid var(--line); font-size:14px; display:flex; align-items:flex-start; gap:8px; line-height:1.4; color:var(--ink); }
+  .key-areas li:last-child { border-bottom:1px solid var(--line); }
+  .key-areas li svg { color:var(--brass); flex-shrink:0; margin-top:3px; }
+  .concept-card { background:var(--paper-raised); border-left:3px solid var(--brass); padding:12px 14px; margin-bottom:10px; }
+  .concept-card .term { font-weight:700; font-size:13.5px; margin:0 0 4px; }
+  .concept-card .note { font-size:13px; color:var(--ink-soft); margin:0; line-height:1.5; }
+  .news-panel { margin-top:18px; }
+  .news-lead { font-size:13.5px; color:var(--ink-soft); margin:0 0 14px; }
+  .source-list { display:flex; flex-direction:column; }
+  .source-item { display:flex; align-items:center; justify-content:space-between; padding:13px 4px; border-top:1px solid var(--line); font-size:14.5px; color:var(--ink); text-decoration:none; }
+  .source-item:last-child { border-bottom:1px solid var(--line); }
+  .source-item svg { color:var(--brass-deep); }
+</style>
+</body>
+</html>
